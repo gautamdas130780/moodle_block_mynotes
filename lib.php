@@ -156,7 +156,7 @@ class block_mynotes_manager  {
     }
     
     public function get_contextarea_by_contextlevel($context) {
-        if ($context->contextlevel == SITEID) {
+        if ($context->instanceid == SITEID) {
             return 'site';
 
         } else if ($context->contextlevel == CONTEXT_COURSE) {

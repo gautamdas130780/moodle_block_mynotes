@@ -24,7 +24,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->version   = 2017121000;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2014050800;        // Requires this Moodle version
+$plugin->requires  = 2015111608.00;        // Requires this Moodle version
 $plugin->component = 'block_mynotes'; // Full name of the plugin (used for diagnostics)
-$plugin->release   = 'v2.7';
+$plugin->release   = 'v3.0-r2';
 $plugin->maturity = MATURITY_STABLE;

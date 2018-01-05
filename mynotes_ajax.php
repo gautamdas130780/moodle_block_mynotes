@@ -72,10 +72,9 @@ switch ($action) {
             $options->courseid = $course->id;
             $options->contextid   = $context->id;
             $options->context   = $context;
-            $options->contextarea = $manager->get_contextarea_by_contextlevel($context);
-            unset($options->courseid);
+            $options->contextarea = block_mynotes_get_contextlevel_string($context);
             $count = $manager->count_mynotes($options);                       
-            echo json_encode(array('notes'=>array($note), 'count' => $count, 'contextarea' => $options->contextarea));
+            echo json_encode(array('notes'=>array($note), 'count' => $count));
         } else {
             echo json_encode(array('error'=>'Unable to add note'));
         }
@@ -88,7 +87,7 @@ switch ($action) {
         $options->contextarea = $contextarea;        
         $count = $manager->count_mynotes($options);        
         $notes = $manager->get_mynotes($options);
-        echo json_encode(array('notes'=>$notes, 'count' => $count, 'contextarea' => $contextarea));
+        echo json_encode(array('notes'=>$notes, 'count' => $count));
         die();
         break;   
     case 'delete':
@@ -104,7 +103,7 @@ switch ($action) {
                 $options->limitfrom = $limitfrom - 1;
             }
             $notes = $manager->get_mynotes($options);
-            echo json_encode(array('notes'=>$notes, 'count' => $count, 'noteid'=>$noteid, 'contextarea' => $contextarea));
+            echo json_encode(array('notes'=>$notes, 'count' => $count, 'noteid'=>$noteid));
         }
         die();
         break;

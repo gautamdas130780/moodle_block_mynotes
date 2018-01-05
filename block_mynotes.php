@@ -91,10 +91,10 @@ class block_mynotes extends block_base {
         global $PAGE, $CFG; 
         list($context, $course, $cm) = get_context_info_array($PAGE->context->id);
         $config = get_config('block_mynotes');
-        $ajaxurl = new moodle_url('/blocks/mynotes/mynotes_ajax.php');
+        
         $mm = new block_mynotes_manager();
         $currenttabindex = $mm->get_contextarea_by_contextlevel($context);
-        $arguments = array(
+        $arguments = array( 'arg'=> array(
             'instanceid' => $this->instance->id,
             'editing' => ($PAGE->user_is_editing()),
             'editingicon_pos' => ($PAGE->user_is_editing()) ? 'mynotes-pos-inline' : $config->icondisplayposition,
@@ -104,9 +104,8 @@ class block_mynotes extends block_base {
             'contextareas' => $mm->get_available_contextareas(),
             'currenttabindex' => ($currenttabindex == NULL? 'site': $currenttabindex),
             'perpage' => $config->mynotesperpage,
-            'ajaxurl' => $ajaxurl->out(false),
-            );
-        $PAGE->requires->string_for_js('characterlimit', 'block_mynotes');
+            ),
+        );
         $PAGE->requires->string_for_js('charactersleft', 'block_mynotes');
         $PAGE->requires->string_for_js('notmorethan', 'block_mynotes');
         $PAGE->requires->string_for_js('mynotes', 'block_mynotes');
@@ -121,6 +120,6 @@ class block_mynotes extends block_base {
         $PAGE->requires->string_for_js('nothingtodisplay', 'block_mynotes');
         $PAGE->requires->string_for_js('mynotessavedundertab', 'block_mynotes');
         $PAGE->requires->string_for_js('cancel', 'moodle');
-        $PAGE->requires->yui_module('moodle-block_mynotes-mynotes', 'M.blocks_mynotes.init_mynotes', array($arguments));
+        $this->page->requires->js_call_amd('block_mynotes/mynotesblock', 'init', $arguments);
     }
 }

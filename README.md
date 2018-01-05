@@ -26,7 +26,7 @@ Any authenticated users can:
 Requirements
 ------------
 
-* Moodle version 2.7x
+* Moodle version 3.0 or above
 
 Installation
 ------------
