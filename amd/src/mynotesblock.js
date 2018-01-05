@@ -20,7 +20,7 @@
  * @package    block_mynotes
  * @author     Gautam Kumar Das<gautam.arg@gmail.com>
  */
-define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], function($, Y, str) {
+define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], function($, Y, str, config, notification) {
     var CONFIG;
     var NODES = {        
         DELETE_ICON: '<span class="delete">&#x274C;</span>',
@@ -79,11 +79,13 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
             }
             return true;
         },
-        toggle_textarea: function(focus) {
+        toggle_textarea: function(e) {
             var ta = $('#id_mynotecontent-' + CONFIG.instanceid);
+            
             if (!ta) {
                 return false;
             }
+            var focus = (e.type == 'focusin');
             if (focus) {
                 if (ta.val() == M.util.get_string('placeholdercontent', 'block_mynotes')) {
                     ta.val('');
@@ -205,6 +207,12 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
                 el.prepend(scope.renderMynotes(notesobj.notes));
             } else {
                 el.append(scope.renderMynotes(notesobj.notes));
+                $(el).find('li').sort(sort_li) // sort elements
+                  .appendTo(el); // append again to the list
+                // sort function callback
+                function sort_li(a, b){
+                    return ($(b).data('itemid')) > ($(a).data('itemid')) ? 1 : -1;    
+                }
             }
             $(SELECTORS.MYNOTES_BASE).find(scope.currenttab).attr('notes-count', notesobj.count);
         },        
@@ -281,6 +289,7 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
             var lists = '';
             var x = '';
             for (x in notes) {
+                $('#mynote-'+ CONFIG.instanceid + '-' + notes[x].id).remove();
                 var deletelink = '<a href="#" id="mynote-delete-' + CONFIG.instanceid + '-' + notes[x].id + '" class="mynote-delete" title="'+ strdeletenote +'">'+ NODES.DELETE_ICON +'</a>';
                 var notedetail = '';
                 if (notes[x].coursename != '') {
@@ -288,7 +297,7 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
                 }
                 var userdate = '<div class="time">' + notes[x].timecreated + '</div>';
                 var note_html = '<div class="content">' + deletelink + notes[x].content + '</div>';
-                lists += '<li id="mynote-' + CONFIG.instanceid + '-' + notes[x].id + '">' + note_html + notedetail + userdate + '</li>';
+                lists += '<li id="mynote-' + CONFIG.instanceid + '-' + notes[x].id + '" data-itemid="' + notes[x].id + '">' + note_html + notedetail + userdate + '</li>';
             }
             return lists;
         },
@@ -320,13 +329,11 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
         },
         registerActions: function() {
             var scope = this; 
-            $('#addmynote_cancel').on('click', function() {
-                panel.hide();
-            });
-            $('#addmynote_submit').on('click', function(e) {                    
-                scope.saveMynotes(e);
-            });
-            $(SELECTORS.MYNOTES_BASE + ' ul.tabs-menu li').on('click', function(e) {
+            
+            $('body').delegate('#addmynote_cancel', 'click', function() {panel.hide()});
+            $('body').delegate('#addmynote_submit', 'click', function(e) {scope.saveMynotes(e)});
+            
+            $('body').delegate(SELECTORS.MYNOTES_BASE + ' ul.tabs-menu li', 'click', function(e) {
                 $(this).addClass("current");
                 $(this).siblings().removeClass("current");
                 var tab = $(this).attr("id").replace('tab-', '');
@@ -340,16 +347,14 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
                     scope.getMynotes(0);
                 }                    
             });
-            var ta = $('#id_mynotecontent-' + CONFIG.instanceid);
-            ta.on('change keypress keyup', function(e) {
-                scope.getWarnings(scope.checkInputText());                        
+            
+            $('body').delegate('#id_mynotecontent-' + CONFIG.instanceid, 'focus blur', function(e) {
+                scope.toggle_textarea(e);
             });
-            ta.on('focus', function() {
-                scope.toggle_textarea(true);
+            $('body').delegate('#id_mynotecontent-' + CONFIG.instanceid, 'change keypress keyup', function(e) {
+                scope.getWarnings(scope.checkInputText());         
             });
-            ta.on('blur', function() {
-                scope.toggle_textarea(false);
-            }); 
+            
             $('body').delegate(SELECTORS.MYNOTES_BASE + ' .mynotes-paging .paging a', 'click', function(e) {
                 e.preventDefault();
                 var regex = new RegExp(/[\?&]page=(\d+)/);
@@ -377,7 +382,7 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
                         params: arg, 
                         callback: function(id, ret, args) { 
                             args.scope.addToList(ret);
-                            $('#mynote-'+ CONFIG.instanceid + '-' + ret.noteid).remove();
+                            $('#mynote-'+ CONFIG.instanceid + '-' + ret.noteid).remove();                            
                             args.scope.displayMynotes();
                         }
                     });
@@ -393,11 +398,12 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
                     {key : 'save', component : 'block_mynotes'},                
                     {key : 'cancel'},
                     {key : 'mynotessavedundertab', component : 'block_mynotes', param: CONFIG.contextareas[scope.currenttabindex]},
+                    {key : 'placeholdercontent', component : 'block_mynotes'}
                 ]).done(function(s) {
                     // Create basic tab structure
                     var el = $('<div></div>').append($('<div id="' + CSS.MYNOTES_BASE + '" class="' + CSS.MYNOTES_BASE + '"></div>')
                         .append('<div class="inputarea"><div class="responsetext"></div><div id="addmynote-label-' + CONFIG.instanceid + '">' + s[1] + ' ' + CONFIG.maxallowedcharacters + '<span class="warning"></span></div>' +
-                            '<div class="textarea"><textarea id="id_mynotecontent-' + CONFIG.instanceid + '" name="mynotecontent" rows="2"/></textarea></div>' +
+                            '<div class="textarea"><textarea id="id_mynotecontent-' + CONFIG.instanceid + '" name="mynotecontent" rows="2">' + s[5] + '</textarea></div>' +
                             '<p class="notesavedhint">' + s[4] + '</p>' +
                             '<p class="mdl-align"><input type="submit" id="addmynote_submit"/></p>' +
                             '</div>'
@@ -423,24 +429,24 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
                     }
                     el.find('.tabs-menu').append(tabsmenu);
                     el.find('.tab').append($(tabcontents));
-                    
-                    panel = new M.core.dialogue ({
-                        draggable: true,
-                        modal: true,
-                        closeButton: true,
-                        headerContent: M.util.get_string('mynotes', 'block_mynotes'),
-                        responsive: true,
+                    Y.use('moodle-core-notification-dialogue', function() {
+                        panel = new M.core.dialogue({
+                            draggable: true,
+                            modal: true,
+                            closeButton: true,
+                            headerContent: M.util.get_string('mynotes', 'block_mynotes'),
+                            responsive: true,
+                        });
+                        panel.set('bodyContent', el.html());
+                        if (initnotes === null) {
+                            initnotes = true;                        
+                            // Get initial notes
+                            scope.getMynotes(0);
+                            $(SELECTORS.MYNOTES_BASE).find(scope.currenttab).attr('data-loaded', "true");
+                            $(SELECTORS.MYNOTES_BASE).find(scope.currenttab).css('display', 'block');
+                        }
+                        panel.show();
                     });
-                    panel.set('bodyContent', el.html());
-                    if (initnotes === null) {
-                        initnotes = true;                        
-                        // Get initial notes
-                        scope.getMynotes(0);
-                        $(SELECTORS.MYNOTES_BASE).find(scope.currenttab).attr('data-loaded', "true");
-                        $(SELECTORS.MYNOTES_BASE).find(scope.currenttab).css('display', 'block');
-                    }
-                    panel.show();
-                    $('#id_mynotecontent-' + CONFIG.instanceid).html(M.util.get_string('placeholdercontent', 'block_mynotes'));
                     scope.registerActions();
                     
                 });

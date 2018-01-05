@@ -72,7 +72,8 @@ switch ($action) {
             $options->courseid = $course->id;
             $options->contextid   = $context->id;
             $options->context   = $context;
-            $options->contextarea = block_mynotes_get_contextlevel_string($context);
+            $options->contextarea = $manager->get_contextarea_by_contextlevel($context);
+            unset($options->courseid);
             $count = $manager->count_mynotes($options);                       
             echo json_encode(array('notes'=>array($note), 'count' => $count));
         } else {
