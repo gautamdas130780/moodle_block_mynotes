@@ -20,13 +20,20 @@
  * @package    block_mynotes
  */
 
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->libdir . '/blocklib.php');
+
+/*
+ * Installation code for mynotes block
+ */
 function xmldb_block_mynotes_install() {
     global $DB;
 
     $obj = new stdClass();
     $obj->blockname = 'mynotes';
     $obj->parentcontextid = SITEID;
-    $obj->showinsubcontexts = BUI_CONTEXTS_ENTIRE_SITE;
+    $obj->showinsubcontexts = 1;
     $obj->pagetypepattern = '*';
     $obj->defaultweight = 0;
     $obj->defaultregion = BLOCK_POS_LEFT;

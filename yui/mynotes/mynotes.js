@@ -303,6 +303,7 @@ YUI.add('moodle-block_mynotes-mynotes', function(Y) {
             var ta = Y.one('#id_mynotecontent-' + this.get(MNTS.INSTANCEID));
             var arg = {
                 contextid: this.get(MNTS.CONTEXTID),
+                contextarea: this.get(MNTS.CURRENTTAB),
                 content: ta.get('value'),
                 action: 'add',
             };

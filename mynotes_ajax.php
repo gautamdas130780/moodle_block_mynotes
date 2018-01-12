@@ -50,34 +50,34 @@ if (!empty($cm)) {
 }
 
 if (!confirm_sesskey()) {
-    $error = array('error'=>get_string('invalidsesskey', 'error'));
+    $error = array('error' => get_string('invalidsesskey', 'error'));
     die(json_encode($error));
 }
- 
+
 if (!isloggedin()) {
     echo json_encode(array('error'=>'require_login'));
     die();
 }
 $config = get_config('block_mynotes');
 
-echo $OUTPUT->header(); // send headers
+echo $OUTPUT->header(); // ...send headers
 // process ajax request
 switch ($action) {
     case 'add':
         $content   = optional_param('content',   '', PARAM_RAW);
         $manager = new block_mynotes_manager();
-        if ($note = $manager->addmynote($context, $course, $content)) {
+        if ($note = $manager->addmynote($context, $contextarea, $course, $content)) {
             $options = new stdClass();
-            $options->page = $page;        
+            $options->page = $page;
             $options->courseid = $course->id;
             $options->contextid   = $context->id;
             $options->context   = $context;
-            $options->contextarea = $manager->get_contextarea_by_contextlevel($context);
+            $options->contextarea = $contextarea;
             unset($options->courseid);
-            $count = $manager->count_mynotes($options);                       
-            echo json_encode(array('notes'=>array($note), 'count' => $count, 'contextarea' => $options->contextarea));
+            $count = $manager->count_mynotes($options);
+            echo json_encode(array('notes' => array($note), 'count' => $count, 'contextarea' => $contextarea));
         } else {
-            echo json_encode(array('error'=>'Unable to add note'));
+            echo json_encode(array('error' => 'Unable to add note'));
         }
         die();
         break;   
@@ -85,10 +85,10 @@ switch ($action) {
         $manager = new block_mynotes_manager();
         $options = new stdClass();
         $options->page = $page;
-        $options->contextarea = $contextarea;        
-        $count = $manager->count_mynotes($options);        
+        $options->contextarea = $contextarea;
+        $count = $manager->count_mynotes($options);
         $notes = $manager->get_mynotes($options);
-        echo json_encode(array('notes'=>$notes, 'count' => $count, 'contextarea' => $contextarea));
+        echo json_encode(array('notes' => $notes, 'count' => $count, 'contextarea' => $contextarea));
         die();
         break;   
     case 'delete':
@@ -104,7 +104,7 @@ switch ($action) {
                 $options->limitfrom = $limitfrom - 1;
             }
             $notes = $manager->get_mynotes($options);
-            echo json_encode(array('notes'=>$notes, 'count' => $count, 'noteid'=>$noteid, 'contextarea' => $contextarea));
+            echo json_encode(array('notes' => $notes, 'count' => $count, 'noteid' => $noteid, 'contextarea' => $contextarea));
         }
         die();
         break;

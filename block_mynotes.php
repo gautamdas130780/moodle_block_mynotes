@@ -25,43 +25,54 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/blocks/mynotes/lib.php');
 
+/**
+ * Mynotes block.
+ *
+ * @package    block_mynotes
+ * 
+ */
 class block_mynotes extends block_base {
-    
-    function init() {
+
+    public function init() {
         $this->title = get_string('pluginname', 'block_mynotes');
     }
 
-    function has_config() {
+    public function has_config() {
         return true;
     }
-    
-    function applicable_formats() {
+
+    public function applicable_formats() {
         return array('all' => true);
     }
 
-    function instance_allow_multiple() {
+    public function instance_allow_multiple() {
         return false;
     }
 
-    function hide_header() {
+    public function hide_header() {
         global $PAGE;
         if (!$PAGE->user_is_editing()) {
             return true;
         }
     }
-    
-    function get_content() {
+
+    /**
+     * The content object.
+     *
+     * @return stdObject
+     */
+    public function get_content() {
         global $CFG, $PAGE;
-        
+
         static $jscount = 0;
-        if ($this->content !== NULL) {
+        if ($this->content !== null) {
             return $this->content;
         }
 
         if (!isloggedin() or isguestuser()) {
             return '';      // Never useful unless you are logged in as real users
         }
-        
+
         if (!in_array($PAGE->context->contextlevel, array(CONTEXT_COURSE, CONTEXT_SYSTEM, CONTEXT_MODULE, CONTEXT_USER))) {
             return '';
         }
@@ -72,28 +83,31 @@ class block_mynotes extends block_base {
         if (empty($this->instance)) {
             return $this->content;
         }        
-        
+
         $this->content = new stdClass();
         $this->content->text = '';
         if ($PAGE->user_is_editing()) {
             $this->content->text = '<div class="inline-mynotes-opener">'.get_string('showmynotes', 'block_mynotes').'</div>';
         }
         $this->content->footer = '';
-        
+
         if ($jscount == 0) {
             $this->block_mynotes_get_required_javascript();
             $jscount++;
         }
         return $this->content;
     }
-    
-    function block_mynotes_get_required_javascript() {
-        global $PAGE, $CFG; 
+
+    /*
+     * load JS that requires into the page.
+     */
+    private function block_mynotes_get_required_javascript() {
+        global $PAGE, $CFG;
         list($context, $course, $cm) = get_context_info_array($PAGE->context->id);
         $config = get_config('block_mynotes');
         $ajaxurl = new moodle_url('/blocks/mynotes/mynotes_ajax.php');
         $mm = new block_mynotes_manager();
-        $currenttabindex = $mm->get_contextarea_by_contextlevel($context);
+        $currenttabindex = $mm->get_current_tab($context, $PAGE);
         $arguments = array(
             'instanceid' => $this->instance->id,
             'editing' => ($PAGE->user_is_editing()),
@@ -102,7 +116,7 @@ class block_mynotes extends block_base {
             'contextid' => $context->id,
             'maxallowedcharacters_warning' => get_string('notmorethan', 'block_mynotes', $config->characterlimit),
             'contextareas' => $mm->get_available_contextareas(),
-            'currenttabindex' => ($currenttabindex == NULL? 'site': $currenttabindex),
+            'currenttabindex' => ($currenttabindex == null ? 'site' : $currenttabindex),
             'perpage' => $config->mynotesperpage,
             'ajaxurl' => $ajaxurl->out(false),
             );

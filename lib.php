@@ -25,31 +25,34 @@ defined('MOODLE_INTERNAL') || die();
 
 
 class block_mynotes_manager  {
-    
+
     public $perpage = 5;
     private $config = null;
-    
-    function __construct() {
+
+    /*
+     * Constructor.
+     */
+    public function __construct() {
         $this->config = get_config('block_mynotes');
         $this->perpage = $this->config->mynotesperpage;
     }
-    
+
     /**
-     * Return matched mynotes
+     * Returns matched mynotes
      *
      * @param  int $page
      * @return array
      */
     public function get_mynotes($options) {
         global $DB, $CFG, $USER, $OUTPUT;
-        
+
         $page = (!isset($options->page) || !$options->page) ? 0 : $options->page;
         $perpage = $this->perpage;
-        
+
         $params = array();
         $start = $page * $perpage;
         $ufields = 'u.id';
-        
+
         $where = ' m.userid = :userid';
         $params['userid'] = $USER->id;
         if (isset($options->contextarea) && !empty($options->contextarea)) {
@@ -60,7 +63,9 @@ class block_mynotes_manager  {
             $where .= ' AND m.courseid = :courseid';
             $params['courseid'] = $options->courseid;            
         }
-        $sql = "SELECT $ufields, m.id AS mynoteid, m.content AS ccontent, m.contextarea, m.format AS cformat, m.timecreated AS timecreated, c.fullname as coursename, m.courseid
+        $sql = "SELECT $ufields, 
+            m.id AS mynoteid, m.content AS ccontent, m.contextarea, m.format AS cformat, 
+            m.timecreated AS timecreated, c.fullname as coursename, m.courseid
                   FROM {block_mynotes} m
                   JOIN {user} u ON u.id = m.userid
                   LEFT JOIN {course} c ON c.id = m.courseid
@@ -93,7 +98,7 @@ class block_mynotes_manager  {
     }
     
     /**
-     * Count the mynotes in a table where all the given conditions met.
+     * Returns count of the mynotes in a table where all the given conditions met.
      *
      * @param object $options
      * @return int The count of records
@@ -110,7 +115,13 @@ class block_mynotes_manager  {
         }
         return $DB->count_records('block_mynotes', $params);
     }
-    
+
+    /*
+     * Returns paging bar for mynotes
+     * 
+     * @param object $options must contain properties(contextid, count, page, perpage)
+     * @return html
+     */
     public function get_pagination($options) {
         global $OUTPUT;
         $baseurl = new moodle_url('/blocks/mynotes/mynotes_ajax.php', 
@@ -119,24 +130,29 @@ class block_mynotes_manager  {
                 );
         return $OUTPUT->paging_bar($options->count, $options->page, $this->perpage, $baseurl);
     }
-    
-    public function addmynote($context, $course, $content, $format = FORMAT_MOODLE) {
+
+    /*
+     * Adding new record of mynote.
+     * 
+     * @return object of single mynote record if insert to DB else false
+     */
+    public function addmynote($context, $contextarea, $course, $content, $format = FORMAT_MOODLE) {
         global $CFG, $DB, $USER, $OUTPUT;
         
         $newnote = new stdClass;
-        $newnote->contextid    = $context->id;
-        $newnote->contextarea  = block_mynotes_get_contextlevel_string($context);
-        $newnote->content      = $content;
-        $newnote->courseid      = $course->id;
-        $newnote->format       = $format;
-        $newnote->userid       = $USER->id;
-        $newnote->timecreated  = time();
+        $newnote->contextid = $context->id;
+        $newnote->contextarea = $contextarea;
+        $newnote->content = $content;
+        $newnote->courseid = $course->id;
+        $newnote->format = $format;
+        $newnote->userid = $USER->id;
+        $newnote->timecreated = time();
 
-        if ($cmt_id = $DB->insert_record('block_mynotes', $newnote)) {
-            $newnote->id = $cmt_id;
-            $newnote->content = format_text($newnote->content, $newnote->format, array('overflowdiv'=>true));
+        if ($cmtid = $DB->insert_record('block_mynotes', $newnote)) {
+            $newnote->id = $cmtid;
+            $newnote->content = format_text($newnote->content, $newnote->format, array('overflowdiv' => true));
             $newnote->timecreated = userdate($newnote->timecreated, get_string('strftimerecentfull', 'langconfig'));
-            $newnote->coursename = ($newnote->courseid == SITEID)? '' : $course->fullname;
+            $newnote->coursename = ($newnote->courseid == SITEID) ? '' : $course->fullname;
             if (!empty($newnote->coursename)) {
                 $newnote->coursename = html_writer::link(course_get_url($course), $newnote->coursename);
             }
@@ -145,21 +161,41 @@ class block_mynotes_manager  {
             return false;
         }
     }
-    
+
+    /*
+     * Find all available context areas which is used to store and retrieve mynotes.
+     * 
+     * @return array
+     */
     public function get_available_contextareas() {
         return array(
-            'site'=>get_string('site', 'block_mynotes'),
-            'course'=>get_string('course', 'block_mynotes'),
-            'mod'=>get_string('mod', 'block_mynotes'),
-            'user'=>get_string('user', 'block_mynotes'),
+            'site' => get_string('site', 'block_mynotes'),
+            'course' => get_string('course', 'block_mynotes'),
+            'mod' => get_string('mod', 'block_mynotes'),
+            'user' => get_string('user', 'block_mynotes'),
         );
     }
-    
-    public function get_contextarea_by_contextlevel($context) {
-        if ($context->contextlevel == SITEID) {
+    /*
+     * Find context area using context level.
+     * 
+     * @param object $context
+     * @retrun string
+     */
+    public function get_current_tab($context, $page) {
+
+        if ($page->url->compare(new moodle_url('/user/view.php'), URL_MATCH_BASE)) {
+            return 'user';
+
+        } else if ($page->url->compare(new moodle_url('/user/profile.php'), URL_MATCH_BASE)) {
+            return 'user';
+
+        } else if ($context->contextlevel == CONTEXT_SYSTEM) {
             return 'site';
 
         } else if ($context->contextlevel == CONTEXT_COURSE) {
+            if ($context->instanceid == SITEID) {
+                return 'site';
+            }
             return 'course';
 
         } else if ($context->contextlevel == CONTEXT_MODULE) {
@@ -178,7 +214,7 @@ class block_mynotes_manager  {
             }
         }
     }
-    
+
     /**
      * Delete a note
      *
@@ -187,13 +223,13 @@ class block_mynotes_manager  {
      */
     public function delete($mynoteid) {
         global $DB, $USER;
-        if (!$mynote = $DB->get_record('block_mynotes', array('id'=>$mynoteid))) {
+        if (!$mynote = $DB->get_record('block_mynotes', array('id' => $mynoteid))) {
             throw new mynotes_exception('deletefailed', 'block_mynotes');
         }
         if ($USER->id != $mynote->userid) {
             throw new mynotes_exception('nopermissiontodelete', 'block_mynotes');
         }
-        return $DB->delete_records('block_mynotes', array('id'=>$mynoteid));
+        return $DB->delete_records('block_mynotes', array('id' => $mynoteid));
     }
 }
 
@@ -201,29 +237,4 @@ class block_mynotes_manager  {
  * Mynotes exception class
  */
 class mynotes_exception extends moodle_exception {
-}
-
-function block_mynotes_get_contextlevel_string($context) {
-    
-    if ($context->contextlevel == CONTEXT_SYSTEM) {
-        return 'site';
-
-    } else if ($context->contextlevel == CONTEXT_COURSE) {
-        return 'course';
-
-    } else if ($context->contextlevel == CONTEXT_MODULE) {
-        return 'mod';
-
-    } else if ($context->contextlevel == CONTEXT_USER) {
-        return 'user';
-
-    } else if ($context->contextlevel == CONTEXT_BLOCK) {
-        $parent = $context->get_parent_context();
-
-        if ($parent->contextlevel == CONTEXT_COURSE) {
-            return 'course';
-        } else if ($parent->contextlevel == CONTEXT_MODULE) {
-            return 'mod';
-        }
-    }
 }
