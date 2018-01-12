@@ -16,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Strings for component 'block_mynotes', language 'en', branch 'MOODLE_30_STABLE'
+ * Strings for component 'block_mynotes', language 'en', branch 'MOODLE_29_STABLE'
  *
  * @package    block_mynotes
  * @author     Gautam Kumar Das<gautam.arg@gmail.com>

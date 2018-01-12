@@ -14,6 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+defined('MOODLE_INTERNAL') || die();
+
 /**
  * Mynotes block installation.
  *
@@ -26,7 +28,7 @@ function xmldb_block_mynotes_install() {
     $obj = new stdClass();
     $obj->blockname = 'mynotes';
     $obj->parentcontextid = SITEID;
-    $obj->showinsubcontexts = BUI_CONTEXTS_ENTIRE_SITE;
+    $obj->showinsubcontexts = 1;
     $obj->pagetypepattern = '*';
     $obj->defaultweight = 0;
     $obj->defaultregion = BLOCK_POS_LEFT;

@@ -1,46 +1,49 @@
 #mynotes-opener { position: absolute; bottom:0px; background: #443355; width: 25px; height: 25px; }
-div.mdl-align{ min-height: 470px; }
-.mynotes-pos-inline-text { padding: 10px; margin-left: 35px; cursor: pointer;}
+div.mdl-align { min-height: 470px; }
+.mynotes-pos-inline-text { padding: 10px; margin-left: 35px; cursor: pointer; }
 .mynotes-pos-inline,
-.mynotes-pos-rb, .mynotes-pos-lb, .mynotes-pos-rt, .mynotes-pos-lt { width: 40px; height: 40px; position: fixed; background: #b31b1b; padding: 0; border-radius: 30px; text-align: center; }
+.mynotes-pos-rb, 
+.mynotes-pos-lb, 
+.mynotes-pos-rt, 
+.mynotes-pos-lt { width: 40px; height: 40px; position: fixed; background: #b31b1b; padding: 0; border-radius: 30px; text-align: center; }
 .mynotes-pos-rb { bottom: 5px; right: 20px; }
 .mynotes-pos-lb { bottom: 5px; left: 20px; }
 .mynotes-pos-rt { top: 100px; right: 20px; }
 .mynotes-pos-lt { top: 100px; left: 20px; }
 .mynotes-pos-inline { position: relative; float: left; }
-.mynotes-pos-inline >span.pencil, .mynotes-pos-rb >span.pencil, .mynotes-pos-lb>span.pencil, .mynotes-pos-rt>span.pencil, .mynotes-pos-lt>span.pencil { color: #fff; font-size: 29px; margin: 0; display: inline-block; font-weight: bold; cursor: pointer; line-height: 40px;}
+.mynotes-pos-inline >span.pencil, .mynotes-pos-rb >span.pencil, .mynotes-pos-lb>span.pencil, .mynotes-pos-rt>span.pencil, .mynotes-pos-lt>span.pencil { color: #fff; font-size: 29px; margin: 0; display: inline-block; font-weight: bold; cursor: pointer; line-height: 40px; }
 
-.mynotes_base {display: inline-block; width: 100%;}
-.mynotes_base .inputarea { background: #fff4d5; padding: 5px; margin-bottom: 10px;}
-.mynotes_base .inputarea p {margin: 0; font-size: 13px;}
-.mynotes_base .textarea { border: 1px solid gray; padding: 5px; background: #fff;}
-.mynotes_base textArea:focus {border: none; box-shadow: none;}
-.mynotes_base textArea {width:100%; max-width: 100%; margin: 0; padding: 0; max-height: 125px; border: none; box-shadow: none;}
-.mynotes_base input[type="submit"], .mynotes_base input[type="submit"]:hover { margin: 0; padding: 3px 10px; border: none; background: #63ab36; color: #fff;}
-.mynotes_base input[type="submit"][disabled="disabled"]:hover {background: #63ab36; cursor: not-allowed;}
-.mynotes_base span.warning {color: #bd3c2f; margin-left: 15px;}
-.mynotes_base .responsetext {color: #33b733; line-height: 20px;}
-.mynotes_base .tabs-menu { height: 30px; float: left; clear: both; margin-bottom: 1px;}
-.mynotes_base .tabs-menu li { padding: 0 10px; margin-right: 1px; height: 30px; line-height: 30px; float: left; list-style: none; background-color: #d84e36; cursor: pointer;}
+.mynotes_base { display: inline-block; width: 100%; }
+.mynotes_base .inputarea { background: #fff4d5; padding: 5px; margin-bottom: 10px; }
+.mynotes_base .inputarea p {margin: 0; font-size: 13px; }
+.mynotes_base .textarea { border: 1px solid gray; padding: 5px; background: #fff; }
+.mynotes_base textArea:focus { border: none; box-shadow: none; }
+.mynotes_base textArea {width:100%; max-width: 100%; margin: 0; padding: 0; max-height: 125px; border: none; box-shadow: none; }
+.mynotes_base input[type="submit"], .mynotes_base input[type="submit"]:hover { margin: 0; padding: 3px 10px; border: none; background: #63ab36; color: #fff; }
+.mynotes_base input[type="submit"][disabled="disabled"]:hover { background: #63ab36; cursor: not-allowed; }
+.mynotes_base span.warning { color: #bd3c2f; margin-left: 15px; }
+.mynotes_base .responsetext { color: #33b733; line-height: 20px; }
+.mynotes_base .tabs-menu { height: 30px; float: left; clear: both; margin-bottom: 1px; }
+.mynotes_base .tabs-menu li { padding: 0 10px; margin-right: 1px; height: 30px; line-height: 30px; float: left; list-style: none; background-color: #d84e36; cursor: pointer; }
 .mynotes_base .tabs-menu li:first-child { border-radius: 7px 0 0 0; }
 .mynotes_base .tabs-menu li:last-child { border-radius: 0 7px 0 0; }
 .mynotes_base .tabs-menu li.current { position: relative; background-color: #ffe6a4; border-bottom: 1px solid #fff; z-index: 5; border-bottom: 2px solid #ffe6a4; }
-.mynotes_base .tabs-menu li:first-child.current { border-left: 1px solid #d4d4d1; border-top: 1px solid #d4d4d4;}
-.mynotes_base .tabs-menu li:last-child.current { border-right: 1px solid #d4d4d1; border-top: 1px solid #d4d4d4;}
-.mynotes_base .tabs-menu li .menu-item{ text-transform: uppercase; color: #fff; text-decoration: none;}
-.mynotes_base .tabs-menu .current .menu-item { color: #000;}
+.mynotes_base .tabs-menu li:first-child.current { border-left: 1px solid #d4d4d1; border-top: 1px solid #d4d4d4; }
+.mynotes_base .tabs-menu li:last-child.current { border-right: 1px solid #d4d4d1; border-top: 1px solid #d4d4d4; }
+.mynotes_base .tabs-menu li .menu-item { text-transform: uppercase; color: #fff; text-decoration: none; }
+.mynotes_base .tabs-menu .current .menu-item { color: #000; }
 
-.mynotes_base .tab { border: 1px solid #d4d4d1; clear: both; width: auto; background: #f7f7f4;}
-.mynotes_base .tab .tab-content {display: none;}
+.mynotes_base .tab { border: 1px solid #d4d4d1; clear: both; width: auto; background: #f7f7f4; }
+.mynotes_base .tab .tab-content { display: none; }
 .mynotes_base .tab .tab-content .notes-info { background: #ffe6a4; padding: 5px; position: relative; }
-.mynotes_base .tab .tab-content .notes-info .count { color: #000;}
-.mynotes_base .tab .tab-content .notes-info .mynotes-paging { position: absolute; right: 0;}
-.mynotes_base .tab .tab-content .notes-info .mynotes-paging .paging a {margin: 5px; background: #c1621e; padding: 4px 10px; border-radius: 15px; color: #fff;}
-.mynotes_base .tab .tab-content .notes-info .mynotes-paging .paging .separator {border-left: 1px solid gray;}
-.mynotes_base .tab .tab-content ul.mynotes_lists {margin:0; clear: both;}
-.mynotes_base .tab .tab-content ul.mynotes_lists li {list-style: none; position: relative; margin: 0 0 5px 0; padding: 5px; list-style: none; background-color: #fff; border-top: 1px solid #e3e4e4;}
-.mynotes_base .tab .tab-content ul.mynotes_lists li .content { margin-right: 10px; word-wrap: break-word;}
-.mynotes_base .tab .tab-content ul.mynotes_lists li .note-detail { display: inline-block; font-size: 11px;}
+.mynotes_base .tab .tab-content .notes-info .count { color: #000; }
+.mynotes_base .tab .tab-content .notes-info .mynotes-paging { position: absolute; right: 0; }
+.mynotes_base .tab .tab-content .notes-info .mynotes-paging .paging a { margin: 5px; background: #c1621e; padding: 4px 10px; border-radius: 15px; color: #fff; }
+.mynotes_base .tab .tab-content .notes-info .mynotes-paging .paging .separator { border-left: 1px solid gray; }
+.mynotes_base .tab .tab-content ul.mynotes_lists { margin:0; clear: both; }
+.mynotes_base .tab .tab-content ul.mynotes_lists li { list-style: none; position: relative; margin: 0 0 5px 0; padding: 5px; list-style: none; background-color: #fff; border-top: 1px solid #e3e4e4; }
+.mynotes_base .tab .tab-content ul.mynotes_lists li .content { margin-right: 10px; word-wrap: break-word; }
+.mynotes_base .tab .tab-content ul.mynotes_lists li .note-detail { display: inline-block; font-size: 11px; }
 .mynotes_base .tab .tab-content ul.mynotes_lists li .time { color: #888; font-style: italic; display: inline-block; margin-left: 5px; font-size: 11px; }
 .mynotes_base .tab .tab-content ul.mynotes_lists li a.mynote-delete { position: absolute; right: 0; margin:0 4px; }
-.mynotes_base .tab .tab-content ul.mynotes_lists li a.mynote-delete span { color: #bbb};
+.mynotes_base .tab .tab-content ul.mynotes_lists li a.mynote-delete span { color: #bbb; }

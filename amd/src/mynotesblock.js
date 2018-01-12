@@ -167,6 +167,7 @@ define(['jquery', 'core/yui', 'core/str', 'core/config', 'core/notification'], f
                 contextid: CONFIG.contextid,
                 content: ta.val(),
                 action: 'add',
+                contextarea: scope.currenttabindex,
             };
             ta.attr('disabled', true);
             ta.css({

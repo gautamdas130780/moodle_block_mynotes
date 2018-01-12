@@ -25,36 +25,47 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/blocks/mynotes/lib.php');
 
+/**
+ * Mynotes block.
+ *
+ * @package    block_mynotes
+ * 
+ */
 class block_mynotes extends block_base {
-    
-    function init() {
+
+    public function init() {
         $this->title = get_string('pluginname', 'block_mynotes');
     }
 
-    function has_config() {
+    public function has_config() {
         return true;
     }
-    
-    function applicable_formats() {
+
+    public function applicable_formats() {
         return array('all' => true);
     }
 
-    function instance_allow_multiple() {
+    public function instance_allow_multiple() {
         return false;
     }
 
-    function hide_header() {
+    public function hide_header() {
         global $PAGE;
         if (!$PAGE->user_is_editing()) {
             return true;
         }
     }
-    
-    function get_content() {
+
+    /**
+     * The content object.
+     *
+     * @return stdObject
+     */
+    public function get_content() {
         global $CFG, $PAGE;
         
         static $jscount = 0;
-        if ($this->content !== NULL) {
+        if ($this->content !== null) {
             return $this->content;
         }
 
@@ -86,14 +97,17 @@ class block_mynotes extends block_base {
         }
         return $this->content;
     }
-    
-    function block_mynotes_get_required_javascript() {
+
+    /*
+     * load JS that requires into the page.
+     */
+    private function block_mynotes_get_required_javascript() {
         global $PAGE, $CFG; 
         list($context, $course, $cm) = get_context_info_array($PAGE->context->id);
         $config = get_config('block_mynotes');
         
         $mm = new block_mynotes_manager();
-        $currenttabindex = $mm->get_contextarea_by_contextlevel($context);
+        $currenttabindex = $mm->get_current_tab($context, $PAGE);
         $arguments = array( 'arg'=> array(
             'instanceid' => $this->instance->id,
             'editing' => ($PAGE->user_is_editing()),
@@ -102,7 +116,7 @@ class block_mynotes extends block_base {
             'contextid' => $context->id,
             'maxallowedcharacters_warning' => get_string('notmorethan', 'block_mynotes', $config->characterlimit),
             'contextareas' => $mm->get_available_contextareas(),
-            'currenttabindex' => ($currenttabindex == NULL? 'site': $currenttabindex),
+            'currenttabindex' => ($currenttabindex == null ? 'site' : $currenttabindex),
             'perpage' => $config->mynotesperpage,
             ),
         );

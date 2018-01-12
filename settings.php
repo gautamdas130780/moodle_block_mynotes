@@ -24,24 +24,22 @@
 defined('MOODLE_INTERNAL') || die;
 
 if ($ADMIN->fulltree) {
-    
+
     $perpageoptions = array();
-    for ($i=1; $i < 20; $i++) {
+    for ($i = 1; $i < 20; $i++) {
         $perpageoptions[$i] = $i;
     }
     $settings->add(new admin_setting_configselect('block_mynotes/mynotesperpage', get_string('mynotesperpage', 'block_mynotes'),
                        get_string('mynotesperpage_help', 'block_mynotes'), 5, $perpageoptions));
-    
+
     $settings->add(new admin_setting_configtext('block_mynotes/characterlimit', get_string('characterlimit', 'block_mynotes'),
                        get_string('characterlimit_help', 'block_mynotes'), 180, PARAM_INT, 3));
-    
-    $position_options = array();
-    $position_options['mynotes-pos-rb'] = get_string('bottomright', 'block_mynotes');
-    $position_options['mynotes-pos-lb'] = get_string('bottomleft', 'block_mynotes');
-    $position_options['mynotes-pos-rt'] = get_string('topright', 'block_mynotes');
-    $position_options['mynotes-pos-lt'] = get_string('topleft', 'block_mynotes');
+
+    $positionoptions = array();
+    $positionoptions['mynotes-pos-rb'] = get_string('bottomright', 'block_mynotes');
+    $positionoptions['mynotes-pos-lb'] = get_string('bottomleft', 'block_mynotes');
+    $positionoptions['mynotes-pos-rt'] = get_string('topright', 'block_mynotes');
+    $positionoptions['mynotes-pos-lt'] = get_string('topleft', 'block_mynotes');
     $settings->add(new admin_setting_configselect('block_mynotes/icondisplayposition', get_string('icondisplayposition', 'block_mynotes'),
-                       get_string('icondisplayposition_help', 'block_mynotes'), 'mynotes-pos-rb', $position_options));
+                       get_string('icondisplayposition_help', 'block_mynotes'), 'mynotes-pos-rb', $positionoptions));
 }
-
-
