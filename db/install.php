@@ -33,6 +33,8 @@ function xmldb_block_mynotes_install() {
     $obj->defaultweight = 0;
     $obj->defaultregion = BLOCK_POS_LEFT;
     $obj->configdata = '';
+    $obj->timecreated = time();
+    $obj->timemodified = time();
     $DB->insert_record('block_instances', $obj);
 
 }
